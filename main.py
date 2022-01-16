@@ -69,6 +69,11 @@ def update_isolement(nom_eleve, prenom_eleve, debut_isol, duree, prof):
     sql = f"UPDATE Eleve SET Debut_isolement = '{debut_isol}', Durée_isolement = '{duree}', Est_isole = CASE WHEN DATE_ADD(Debut_isolement, INTERVAL Durée_isolement DAY) > DATE( NOW() ) THEN 'oui' ELSE 'non' END WHERE Nom_eleve = '{nom_eleve}' AND Prenom_eleve = '{prenom_eleve}' AND id_professeur = (SELECT id_professeur FROM Professeur WHERE Nom_professeur='{prof}')"
     return run_update_query(sql)
 
+def highlight_isole(df):
+    if df["En isolement"] == "oui":
+        return ['background-color: yellow']*5
+    else:
+        return ['background-color: white']*5
 
 # Main page
 prof = st.sidebar.selectbox(options=['-- Nom du professeur --'] + list(liste_prof()['Nom_professeur']),
@@ -85,7 +90,7 @@ if mot_de_passe == st.secrets['pass']['mdp'] and prof != '-- Nom du professeur -
         liste = liste_classe(prof).fillna("")
         liste["Durée isolement"] = liste["Durée isolement"].apply(
             lambda x: str(int(x)) + ' jour' + ('s' if x != 1 else "") if isinstance(x, float) else "")
-        liste = liste.sort_values(by=['Nom']).reset_index().drop("index", axis=1)
+        liste = liste.sort_values(by=['Nom']).reset_index().drop("index", axis=1).style.apply(highlight_isole, axis=1)
         st.dataframe(liste, height=5000)
 
     with c1:
