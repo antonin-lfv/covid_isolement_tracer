@@ -91,8 +91,8 @@ if mot_de_passe == st.secrets['pass']['mdp'] and prof != '-- Nom du professeur -
     with c1:
         with st.form("Modifier ou ajouter une date d'isolement"):
             st.write("Modifier ou ajouter une date d'isolement")
-            eleve = st.selectbox(options=[" ".join((i, j)) for i, j in zip(list(liste_classe(prof)['Nom']),
-                                                                           list(liste_classe(prof)['Prenom']))],
+            eleve = st.selectbox(options=[" ".join((i, j)) for i, j in zip(list(liste_classe(prof).sort_values(by=['Nom'])['Nom']),
+                                                                           list(liste_classe(prof).sort_values(by=['Nom'])['Prenom']))],
                                  label='Choisir un élève')
             debut_isol = st.date_input(label="Date de début d'isolement", max_value=date.today(),
                                        help="Format date = AAAA/MM/JJ")
