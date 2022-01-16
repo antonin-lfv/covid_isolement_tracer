@@ -5,7 +5,7 @@ import pandas as pd
 from datetime import date
 
 # Style
-st.set_page_config(layout="wide", page_title="Covid Tracer", initial_sidebar_state="expanded", menu_items={
+st.set_page_config(layout="wide", page_title="Covid Tracer", menu_items={
     'About': "Réalisé par Antonin"
 })
 
@@ -20,8 +20,6 @@ st.markdown("""
     // border: solid #4976E4 5px;
     // padding: 5px;
 }
-.row_heading.level0 {display:none}
-.blank {display:none}
 </style>
 """, unsafe_allow_html=True)
 st.markdown('<p class="first_titre">Covid Tracer</p>', unsafe_allow_html=True)
@@ -73,11 +71,11 @@ def update_isolement(nom_eleve, prenom_eleve, debut_isol, duree, prof):
 
 
 # Main page
-c1, c2, c3 = st.columns((1, 0.1, 1))
 prof = st.sidebar.selectbox(options=['-- Nom du professeur --'] + list(liste_prof()['Nom_professeur']),
                     label="Qui êtes vous ?")
 
 mot_de_passe = st.sidebar.text_input("Saisissez le mot de passe", max_chars=20, placeholder="Mot de passe", type="password")
+c1, c2, c3 = st.columns((1, 0.1, 1))
 
 if mot_de_passe == st.secrets['pass']['mdp'] and prof != '-- Nom du professeur --':
     with c3:
