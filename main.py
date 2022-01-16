@@ -28,7 +28,8 @@ st.markdown('<p class="first_titre">Covid Tracer</p>', unsafe_allow_html=True)
 st.write("---")
 
 # Initialize connection.
-list_col_names_eleve = ['id_eleve', 'Nom_eleve', 'Prenom_eleve', 'Debut_isolement', 'Duree_isolement', 'id_professeur', 'Est_isole']
+list_col_names_eleve = ['id_eleve', 'Nom_eleve', 'Prenom_eleve', 'Debut_isolement', 'Duree_isolement', 'id_professeur',
+                        'Est_isole']
 list_col_names_professeur = ['id_professeur', 'Nom_professeur', 'Prenom_professeur']
 
 # Uses st.cache to only run once.
@@ -79,8 +80,12 @@ with c1:
 
 if prof != '-- Nom du professeur --':
     with c3:
-        run_update_query(f"UPDATE Eleve SET Est_isole = CASE WHEN DATE_ADD(Debut_isolement, INTERVAL Durée_isolement DAY) > DATE( NOW() ) THEN 'oui' ELSE 'non' END")
-        st.dataframe(liste_classe(prof))
+        run_update_query(
+            f"UPDATE Eleve SET Est_isole = CASE WHEN DATE_ADD(Debut_isolement, INTERVAL Durée_isolement DAY) > DATE( NOW() ) THEN 'oui' ELSE 'non' END")
+        liste = liste_classe(prof).fillna("")
+        liste["Durée isolement"] = liste["Durée isolement"].apply(
+            lambda x: str(int(x)) + ' jour' + ('s' if x != 1 else "") if isinstance(x, float) else "")
+        st.dataframe(liste, height=500)
 
     with c1:
         st.write("##")
@@ -89,8 +94,10 @@ if prof != '-- Nom du professeur --':
             eleve = st.selectbox(options=[" ".join((i, j)) for i, j in zip(list(liste_classe(prof)['Nom']),
                                                                            list(liste_classe(prof)['Prenom']))],
                                  label='Choisir un élève')
-            debut_isol = st.date_input(label="Date de début d'isolement", max_value=date.today(), help="Format date = AAAA/MM/JJ")
-            duree = st.number_input(label="Durée d'isolement", min_value=1, max_value=30, help="Nombre de jours d'isolement")
+            debut_isol = st.date_input(label="Date de début d'isolement", max_value=date.today(),
+                                       help="Format date = AAAA/MM/JJ")
+            duree = st.number_input(label="Durée d'isolement", min_value=1, max_value=30,
+                                    help="Nombre de jours d'isolement")
             submitted = st.form_submit_button("Submit")
             if submitted:
                 update_isolement(eleve.split(" ")[0], eleve.split(" ")[1], debut_isol, duree, prof)
@@ -98,7 +105,8 @@ if prof != '-- Nom du professeur --':
                 st.experimental_rerun()
 
         st.write("##")
-        date_fin_isole = st.date_input(label="Elève(s) en fin d'isolement ce jour", min_value=date.today(), help="Format date = AAAA/MM/JJ")
+        date_fin_isole = st.date_input(label="Elève(s) en fin d'isolement ce jour", min_value=date.today(),
+                                       help="Format date = AAAA/MM/JJ")
         st.write("##")
         res_date_fin_isole = get_data(
             f"SELECT Nom_eleve AS 'Nom', Prenom_eleve AS 'Prénom' from Eleve, Professeur WHERE Eleve.id_professeur=Professeur.id_professeur AND Professeur.Nom_professeur='{prof}' AND DATE_ADD(Debut_isolement, INTERVAL Durée_isolement DAY)='{date_fin_isole}'")
