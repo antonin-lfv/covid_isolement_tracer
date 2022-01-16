@@ -72,9 +72,10 @@ def update_isolement(nom_eleve, prenom_eleve, debut_isol, duree, prof):
 
 # Main page
 prof = st.sidebar.selectbox(options=['-- Nom du professeur --'] + list(liste_prof()['Nom_professeur']),
-                    label="Qui êtes vous ?")
+                            label="Qui êtes vous ?")
 
-mot_de_passe = st.sidebar.text_input("Saisissez le mot de passe", max_chars=20, placeholder="Mot de passe", type="password")
+mot_de_passe = st.sidebar.text_input("Saisissez le mot de passe", max_chars=20, placeholder="Mot de passe",
+                                     type="password")
 c1, c2, c3 = st.columns((1, 0.1, 1))
 
 if mot_de_passe == st.secrets['pass']['mdp'] and prof != '-- Nom du professeur --':
