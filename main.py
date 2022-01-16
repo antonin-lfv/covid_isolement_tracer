@@ -103,7 +103,7 @@ if mot_de_passe == st.secrets['pass']['mdp'] and prof != '-- Nom du professeur -
                                        help="Format date = AAAA/MM/JJ")
             duree = st.number_input(label="Durée d'isolement", min_value=1, max_value=30,
                                     help="Nombre de jours d'isolement")
-            submitted = st.form_submit_button("Submit")
+            submitted = st.form_submit_button("Envoyer")
             if submitted:
                 update_isolement(eleve.split(" ")[0], eleve.split(" ")[1], debut_isol, duree, prof)
                 st.success("Modification effectuée avec succès !")
