@@ -74,11 +74,12 @@ def update_isolement(nom_eleve, prenom_eleve, debut_isol, duree, prof):
 
 # Main page
 c1, c2, c3 = st.columns((1, 0.1, 1))
-with c1:
-    prof = st.selectbox(options=['-- Nom du professeur --'] + list(liste_prof()['Nom_professeur']),
-                        label="Qui êtes vous ?")
+prof = st.sidebar.selectbox(options=['-- Nom du professeur --'] + list(liste_prof()['Nom_professeur']),
+                    label="Qui êtes vous ?")
 
-if prof != '-- Nom du professeur --':
+mot_de_passe = st.sidebar.text_input("Saisissez le mot de passe", max_chars=20, placeholder="Mot de passe", type="password")
+
+if mot_de_passe == st.secrets['pass']['mdp'] and prof != '-- Nom du professeur --':
     with c3:
         run_update_query(
             f"UPDATE Eleve SET Est_isole = CASE WHEN DATE_ADD(Debut_isolement, INTERVAL Durée_isolement DAY) > DATE( NOW() ) THEN 'oui' ELSE 'non' END")
@@ -88,7 +89,6 @@ if prof != '-- Nom du professeur --':
         st.dataframe(liste, height=500)
 
     with c1:
-        st.write("##")
         with st.form("Modifier ou ajouter une date d'isolement"):
             st.write("Modifier ou ajouter une date d'isolement")
             eleve = st.selectbox(options=[" ".join((i, j)) for i, j in zip(list(liste_classe(prof)['Nom']),
