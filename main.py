@@ -86,7 +86,7 @@ if mot_de_passe == st.secrets['pass']['mdp'] and prof != '-- Nom du professeur -
         liste["Durée isolement"] = liste["Durée isolement"].apply(
             lambda x: str(int(x)) + ' jour' + ('s' if x != 1 else "") if isinstance(x, float) else "")
         liste = liste.sort_values(by=['Nom'])
-        st.dataframe(liste, height=500)
+        st.dataframe(liste, height=5000)
 
     with c1:
         with st.form("Modifier ou ajouter une date d'isolement"):
