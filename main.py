@@ -28,7 +28,7 @@ st.markdown('<p class="first_titre">Covid Tracer</p>', unsafe_allow_html=True)
 st.write("---")
 
 # Initialize connection.
-list_col_names_eleve = ['id_eleve', 'Nom_eleve', 'Prenom_eleve', 'Debut_isolement', 'Duree_isolement', 'id_professeur']
+list_col_names_eleve = ['id_eleve', 'Nom_eleve', 'Prenom_eleve', 'Debut_isolement', 'Duree_isolement', 'id_professeur', 'Est_isole']
 list_col_names_professeur = ['id_professeur', 'Nom_professeur', 'Prenom_professeur']
 
 # Uses st.cache to only run once.
@@ -58,7 +58,7 @@ def get_data(request, con=conn):
 def liste_classe(prof):
     """Retourn les infos des élèves du prof"""
     return get_data(
-        f"SELECT Nom_eleve AS 'Nom', Prenom_eleve AS 'Prenom', Debut_isolement AS 'Début isolement', Durée_isolement AS 'Durée isolement' from Eleve, Professeur WHERE Eleve.id_professeur=Professeur.id_professeur AND Professeur.Nom_professeur='{prof}'")
+        f"SELECT Nom_eleve AS 'Nom', Prenom_eleve AS 'Prenom', Debut_isolement AS 'Début isolement', Durée_isolement AS 'Durée isolement', Est_isole AS 'En isolement' from Eleve, Professeur WHERE Eleve.id_professeur=Professeur.id_professeur AND Professeur.Nom_professeur='{prof}'")
 
 
 def liste_prof():
@@ -67,7 +67,7 @@ def liste_prof():
 
 
 def update_isolement(nom_eleve, prenom_eleve, debut_isol, duree, prof):
-    sql = f"UPDATE Eleve SET Debut_isolement = '{debut_isol}', Durée_isolement = '{duree}' WHERE Nom_eleve = '{nom_eleve}' AND Prenom_eleve = '{prenom_eleve}' AND id_professeur = (SELECT id_professeur FROM Professeur WHERE Nom_professeur='{prof}')"
+    sql = f"UPDATE Eleve SET Debut_isolement = '{debut_isol}', Durée_isolement = '{duree}', Est_isole = CASE WHEN DATE_ADD(Debut_isolement, INTERVAL Durée_isolement DAY) > DATE( NOW() ) THEN 'oui' ELSE 'non' END WHERE Nom_eleve = '{nom_eleve}' AND Prenom_eleve = '{prenom_eleve}' AND id_professeur = (SELECT id_professeur FROM Professeur WHERE Nom_professeur='{prof}')"
     return run_update_query(sql)
 
 
@@ -79,6 +79,7 @@ with c1:
 
 if prof != '-- Nom du professeur --':
     with c3:
+        run_update_query(f"UPDATE Eleve SET Est_isole = CASE WHEN DATE_ADD(Debut_isolement, INTERVAL Durée_isolement DAY) > DATE( NOW() ) THEN 'oui' ELSE 'non' END")
         st.dataframe(liste_classe(prof))
 
     with c1:
@@ -94,6 +95,7 @@ if prof != '-- Nom du professeur --':
             if submitted:
                 update_isolement(eleve.split(" ")[0], eleve.split(" ")[1], debut_isol, duree, prof)
                 st.success("Modification effectuée avec succès !")
+                st.experimental_rerun()
 
         st.write("##")
         date_fin_isole = st.date_input(label="Elève(s) en fin d'isolement ce jour", min_value=date.today(), help="Format date = AAAA/MM/JJ")
