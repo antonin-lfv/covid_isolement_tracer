@@ -5,7 +5,7 @@ import pandas as pd
 from datetime import date
 
 # Style
-st.set_page_config(layout="wide", page_title="Covid Tracer", menu_items={
+st.set_page_config(layout="wide", page_title="Covid Tracer", initial_sidebar_state="expanded", menu_items={
     'About': "Réalisé par Antonin"
 })
 
