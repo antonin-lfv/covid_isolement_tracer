@@ -85,7 +85,7 @@ if mot_de_passe == st.secrets['pass']['mdp'] and prof != '-- Nom du professeur -
         liste = liste_classe(prof).fillna("")
         liste["Durée isolement"] = liste["Durée isolement"].apply(
             lambda x: str(int(x)) + ' jour' + ('s' if x != 1 else "") if isinstance(x, float) else "")
-        liste = liste.sort_values(by=['Nom']).set_index(None)
+        liste = liste.sort_values(by=['Nom'])
         st.dataframe(liste, height=500)
 
     with c1:
