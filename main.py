@@ -76,7 +76,7 @@ prof = st.sidebar.selectbox(options=['-- Nom du professeur --'] + list(liste_pro
 
 mot_de_passe = st.sidebar.text_input("Saisissez le mot de passe", max_chars=11, placeholder="Mot de passe",
                                      type="password")
-c1, c2, c3 = st.columns((0.4, 0.01, 1))
+c1, c2, c3 = st.columns((0.4, 0.05, 1))
 
 if mot_de_passe == st.secrets['pass']['mdp'] and prof != '-- Nom du professeur --':
     with c3:
