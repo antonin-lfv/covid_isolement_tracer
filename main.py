@@ -113,7 +113,7 @@ if mot_de_passe == st.secrets['pass']['mdp'] and prof != '-- Nom du professeur -
         if len(res_date_fin_isole) == 0:
             st.info("Aucun élève ne rentre ce jour")
         else:
-            st.dataframe(res_date_fin_isole)
+            st.dataframe(res_date_fin_isole.sort_values(by=['Nom']))
 
     st.write("##")
     st.write("---")
